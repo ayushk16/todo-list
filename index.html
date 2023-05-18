@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TODOs</title>
+    <link rel = "icon" href = 
+"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png" 
+        type = "image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+    
+</head>
+
+<body>
+    <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">TODOs List</a>
+            <div style="color: white;">
+                <p>Current Time Is : <span id="time" class="time"></span></p>
+                <p>Date Is :<span id="date" class="date"></span></p>
+            </div>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+        </div>
+    </nav>
+    <div class="container" id="container">
+        <!-- heading -->
+        <h1 class="head text-center" id="heading" style="margin-top: 30px;">TO DOs</h1>
+        <!-- input field -->
+        <div class="mb-3">
+            <label class="form-label">add to list</label>
+            <input type="text" class="form-control" id="input" aria-describedby="Task" placeholder="add your tasks">
+        </div>
+        <button type="submit" class="btn btn-primary" id="add">+</button>
+        <table class="table  table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">SNo.</th>
+                    <th scope="col">Tasks</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <th scope="row"></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <script>
+        // clock !!
+        let tim;
+        let dat;
+        setInterval(() => {
+            timeNow = new Date();
+            dat = timeNow.toLocaleDateString();
+            tim = timeNow.getHours() + ":" + timeNow.getMinutes() + ":" + timeNow.getSeconds();
+            document.getElementById("time").innerHTML = tim;
+            document.getElementById("date").innerHTML = dat;
+            // console.log(document.getElementById("time"))
+        }, 1000);
+
+        // TODOs
+        localStorage.clear();
+        task = document.getElementById("input");
+        function getupdate() {
+            task = document.getElementById('input').value;
+            // dat = document.getElementById('date').value;
+            if (localStorage.getItem('Item') == null) {
+                Array = [];
+                Array.push([task, dat,tim]);
+                localStorage.setItem('Item', JSON.stringify(Array));
+            } else {
+                Arraystr = localStorage.getItem('Item');
+                Array = JSON.parse(Arraystr);
+                Array.push([task, dat,tim]);
+                localStorage.setItem('Item', JSON.stringify(Array));
+            }
+            update();
+
+        }
+        // update in the table
+        function update() {
+            if (localStorage.getItem('Item') == null) {
+                Array = [];
+                localStorage.setItem('Item', JSON.stringify(Array));
+            } else {
+                Arraystr = localStorage.getItem('Item');
+                Array = JSON.parse(Arraystr);
+            }
+
+            // adding elements to the table
+            content = document.getElementById("tableBody");
+            let str = "";
+            Array.forEach((element,i)=> {
+                str += `
+                <tr>
+                    <th scope="row">${i+1}</th>
+                    <th>${element[0]}</th>
+                    <th>${element[1]}</th>
+                    <th>${element[2]}</th>
+                    <th><button class="btn btn-primary btn-sm" onclick=delet(${i})>del.</button></th>
+                </tr>
+                `;
+            })
+            tableBody.innerHTML = str;
+            document.getElementById('input').value=null;
+        }
+        add.addEventListener('click',getupdate);
+
+        // deletion in list
+        function delet(index){
+            console.log("Delete" , index);
+            Arraystr = localStorage.getItem('Item');
+            Array = JSON.parse(Arraystr);
+            Array.splice(index,1);
+            localStorage.setItem('Item',JSON.stringify(Array));
+            update();
+        }
+
+    </script>
+</body>
+
+</html>
